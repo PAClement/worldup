@@ -1,9 +1,17 @@
 <template>
   <header :class="transparent ? 'bg-transparent':'bg-secondary-500'">
     <nav class="mx-auto flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-      <div class="hidden lg:flex lg:gap-x-12">
-        <NuxtLink to="/" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Home</NuxtLink>
+      <div class="hidden lg:flex lg:items-center lg:gap-x-12">
+        <NuxtLink to="/">
+          <NuxtImg
+              src="/assets/img/logo.png"
+              alt="Logo"
+              class="h-12 w-auto"/>
+        </NuxtLink>
+        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Qui sommes-nous ?</NuxtLink>
+        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">News</NuxtLink>
         <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Forum</NuxtLink>
+        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Map</NuxtLink>
       </div>
       <div class="flex justify-between lg:hidden">
         <button
