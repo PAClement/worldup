@@ -1,3 +1,5 @@
+import plugin from "tailwindcss/plugin";
+
 export default {
     content: {
         files: [
@@ -101,9 +103,17 @@ export default {
                 },
             },
             fontFamily: {
-                'bebas': 'BebasNeue',
+                'title': 'BebasNeue',
             },
         },
     },
-    plugins: [],
+    plugins: [
+        plugin(function ({ addComponents }) {
+            addComponents({
+                '.custom-title': {
+                    '@apply font-title tracking-wide': {},
+                },
+            })
+        }),
+    ],
 };
