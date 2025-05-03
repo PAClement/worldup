@@ -2,12 +2,3 @@
     font-family: 'BebasNeue';
     src: url('../fonts/BebasNeue-Regular.ttf') format('truetype');
 }
-
-.custom-title {
-    @apply tracking-wide;
-    font-family: 'BebasNeue', sans-serif;
-}
-
-.custom-underline {
-    @apply underline decoration-primary-500 decoration-2 underline-offset-8;
-}
