@@ -1,6 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "@tailwindcss/vite";
-
 export default defineNuxtConfig({
     compatibilityDate: '2024-11-01',
     devtools: {enabled: true},
@@ -10,9 +8,10 @@ export default defineNuxtConfig({
         '@vesp/nuxt-fontawesome',
     ],
     css: [
+        'public/assets/css/tailwind.css',
         'public/assets/css/styles.css',
     ],
-    vite: {
-        plugins: [tailwindcss()],
+    ui: {
+        colorMode: false
     }
 })
