@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import MobileMenu from "@/components/MobileMenu.vue";
-import DesktopMenu from "@/components/DesktopMenu.vue";
+import MobileMenu from "@/components/layout/MobileMenu.vue";
+import DesktopMenu from "@/components/layout/DesktopMenu.vue";
 
 defineProps<{
   transparent?: boolean;
