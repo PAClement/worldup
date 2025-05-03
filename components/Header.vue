@@ -8,10 +8,16 @@
               alt="Logo"
               class="h-12 w-auto"/>
         </NuxtLink>
-        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Qui sommes-nous ?</NuxtLink>
-        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">News</NuxtLink>
-        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Forum</NuxtLink>
-        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500">Map</NuxtLink>
+        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500"
+                  exact-active-class="custom-underline">Qui sommes-nous ?
+        </NuxtLink>
+        <NuxtLink to="/news" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500"
+                  exact-active-class="custom-underline">News
+        </NuxtLink>
+        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500"
+                  exact-active-class="custom-underline">Forum</NuxtLink>
+        <NuxtLink to="/forum" class="text-sm/6 font-semibold text-accent-100 hover:text-primary-500"
+                  exact-active-class="custom-underline">Map</NuxtLink>
       </div>
       <div class="flex justify-between lg:hidden">
         <button
