@@ -113,6 +113,9 @@ export default {
                 '.custom-title': {
                     '@apply font-title tracking-wide': {},
                 },
+                '.custom-underline': {
+                    '@apply underline decoration-primary-500 decoration-2 underline-offset-8': {},
+                },
             })
         }),
     ],
