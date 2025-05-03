@@ -7,4 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@vesp/nuxt-fontawesome'
   ],
+  css: [
+    'public/assets/css/styles.css',
+  ],
 })

@@ -101,7 +101,7 @@ export default {
                 },
             },
             fontFamily: {
-                'bebas': ['Bebas Neue', 'sans-serif'],
+                'bebas': 'BebasNeue',
             },
         },
     },

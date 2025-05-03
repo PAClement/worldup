@@ -1,6 +1,4 @@
 <template>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
   <div class="bg-[url(/assets/img/main_bg.jpg)] h-dvh">
     <div class="bg-black/50 backdrop-invert backdrop-opacity-10 h-dvh">
       <Header :transparent="true"/>
