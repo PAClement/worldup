@@ -11,10 +11,30 @@
           <h1 class="text-6xl text-center text-accent-100 my-10 font-bebas">Commencer votre <br> <span
               class="text-primary-500">aventure !</span></h1>
         </div>
-        <font-awesome :icon="faArrowDown" class="text-4xl text-primary-500 motion-safe:animate-bounce"/>
+        <font-awesome :icon="faArrowDown" class="text-4xl text-primary-500 motion-safe:animate-bounce lg:mt-20"/>
       </div>
     </div>
   </div>
+
+  <section class="p-3">
+    <div class="flex justify-center w-1/2">
+      <NuxtImg
+          src="/assets/img/castle.jpg"
+          alt="Castle"
+          class="h-72 w-auto"/>
+      <div class="pl-5">
+        <h2>Hello world</h2>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore
+          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+          commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
+          nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+          anim id est laborum.
+        </p>
+      </div>
+    </div>
+  </section>
+  <Footer/>
 </template>
 
 <script setup lang="ts">
