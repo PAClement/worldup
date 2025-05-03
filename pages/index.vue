@@ -8,7 +8,7 @@
               src="/assets/img/logo_full.png"
               alt="Logo"
               class="h-72 w-auto mx-auto mt-10"/>
-          <h1 class="text-6xl text-center text-accent-100 my-10 font-bebas">Commencer votre <br> <span
+          <h1 class="text-6xl text-center text-accent-100 my-10 custom-title">Commencer votre <br> <span
               class="text-primary-500">aventure !</span></h1>
         </div>
         <font-awesome :icon="faArrowDown" class="text-4xl text-primary-500 motion-safe:animate-bounce lg:mt-20"/>
