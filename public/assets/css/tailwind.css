@@ -92,6 +92,16 @@
     font-family: 'BebasNeue', sans-serif;
 }
 
+.custom-content-title{
+    @apply text-2xl text-secondary-500;
+    font-family: 'Roboto', sans-serif;
+}
+
+.custom-content-body{
+    @apply text-base text-accent-500;
+    font-family: 'Roboto', sans-serif;
+}
+
 .custom-underline {
     @apply underline decoration-primary-500 decoration-2 underline-offset-8;
 }
