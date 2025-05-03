@@ -39,5 +39,7 @@
 
 <script setup lang="ts">
 import {faArrowDown} from '@fortawesome/free-solid-svg-icons'
+import Header from "@/components/layout/Header.vue";
+import Footer from "@/components/layout/Footer.vue";
 
 </script>

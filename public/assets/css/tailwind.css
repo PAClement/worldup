@@ -86,3 +86,12 @@
     --color-error-800: rgb(154, 14, 14);
     --color-error-900: rgb(127, 0, 0);
 }
+
+.custom-title {
+    @apply tracking-wide;
+    font-family: 'BebasNeue', sans-serif;
+}
+
+.custom-underline {
+    @apply underline decoration-primary-500 decoration-2 underline-offset-8;
+}
