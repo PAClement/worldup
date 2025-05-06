@@ -1,0 +1,1 @@
+ALTER TABLE `web_user` ADD `link_code` text;

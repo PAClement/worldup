@@ -7,7 +7,8 @@ export const user = mysqlTable("web_user", {
  emailVerified: boolean('email_verified').notNull(),
  image: text('image'),
  createdAt: timestamp('created_at').notNull(),
- updatedAt: timestamp('updated_at').notNull()
+ updatedAt: timestamp('updated_at').notNull(),
+  linkCode: text('link_code'),
 				});
 
 export const session = mysqlTable("web_session", {
@@ -45,3 +46,9 @@ export const verification = mysqlTable("web_verification", {
  createdAt: timestamp('created_at'),
  updatedAt: timestamp('updated_at')
 				});
+
+export const mcAccountLink = mysqlTable("web_mc_account_link", {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('userId', { length: 36 }).notNull().references(()=> user.id, { onDelete: 'cascade' }),
+  mcUuid: text('mc_uuid').notNull(),
+})

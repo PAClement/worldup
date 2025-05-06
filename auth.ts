@@ -17,6 +17,11 @@ export const auth = betterAuth({
   user: {
     deleteUser: {
       enabled: true,
+    },
+    additionalFields: {
+      linkCode: {
+        type: "string"
+      }
     }
   }
   // emailVerification: {

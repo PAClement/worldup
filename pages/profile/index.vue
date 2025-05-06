@@ -7,11 +7,15 @@ import * as v from 'valibot'
 import type {FormSubmitEvent} from '@nuxt/ui'
 import Button from "@/components/ui/Button.vue";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {generateRandomCode} from "@/lib/utils";
 
 const session = authClient.useSession()
 
 const updateImageSchema = v.object({
   imageUrl: v.pipe(v.string(), v.url(), v.minLength(8, 'Must be an url')),
+})
+const updateImageFileSchema = v.object({
+  image: v.pipe(v.string()),
 })
 const updatePasswordSchema = v.object({
   password: v.pipe(v.string(), v.minLength(8, 'Must be at least 8 characters')),
@@ -19,6 +23,7 @@ const updatePasswordSchema = v.object({
 })
 
 type UpdateImageSchema = v.InferOutput<typeof updateImageSchema>
+type UpdateImageFileSchema = v.InferOutput<typeof updateImageFileSchema>
 type UpdatePasswordSchema = v.InferOutput<typeof updatePasswordSchema>
 
 const newPasswordState = reactive({
@@ -28,8 +33,36 @@ const newPasswordState = reactive({
 const imageState = reactive({
   imageUrl: ''
 })
+const imageFileState = reactive({
+  image: ''
+})
 
 const isDeleteAccountModalOpen = ref(false)
+
+const mcCode = ref('')
+const mcUuid = await $fetch('/api/uuid', {
+  method: 'GET',
+})
+const playerBalance = await $fetch('/api/balance', {
+  method: 'POST',
+  body: {
+    uuid: mcUuid
+  }
+})
+const playerRank = await $fetch('/api/rank', {
+  method: 'POST',
+  body: {
+    uuid: mcUuid
+  }
+})
+const playerProfiles = await $fetch('/api/profiles', {
+  method: 'POST',
+  body: {
+    uuid: mcUuid
+  }
+})
+
+const { handleFileInput, files } = useFileStorage({ clearOldFiles: true })
 
 const toast = useToast()
 
@@ -44,6 +77,14 @@ async function onImageUpdate(event: FormSubmitEvent<UpdateImageSchema>) {
     },
     onSuccess: (ctx) => {
       toast.add({ title: 'Succès', description: 'Votre image a été mis à jour avec succès.', color: 'success' })
+    }
+  })
+}
+async function onImageFileUpdate(event: FormSubmitEvent<UpdateImageFileSchema>) {
+  await $fetch('/api/image', {
+    method: 'POST',
+    body: {
+      files: files.value
     }
   })
 }
@@ -78,6 +119,21 @@ async function onDeleteAccount() {
     }
   })
 }
+async function onMcAccountLink() {
+  const code = generateRandomCode(10);
+
+  const { data, error } = await authClient.updateUser({
+    linkCode: code
+  }, {
+    onError: (ctx) => {
+      toast.add({ title: 'Erreur', description: 'Une erreur incongrue est survenue.', color: 'error' })
+    },
+    onSuccess: (ctx) => {
+      toast.add({ title: 'Succès', description: 'Votre code a été généré !', color: 'success' })
+      mcCode.value = code
+    }
+  })
+}
 </script>
 
 <template>
@@ -87,42 +143,132 @@ async function onDeleteAccount() {
   <div class="container mx-auto px-4 py-8">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <div class="bg-white p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-bold mb-4">User Details</h2>
-        <div class="space-y-4">
-          <div>
-            <p class="font-semibold">Email:</p>
-            <p>{{ session?.data?.user?.email }}</p>
+        <h2 class="text-2xl font-bold mb-8">Ma fiche joueur</h2>
+
+        <UAlert
+          v-if="!mcUuid"
+          title="Attention !"
+          description="Vous devez connecter votre compte Minecraft pour voir vos détails."
+          color="warning"
+        />
+
+        <div v-if="mcUuid">
+
+          <div class="flex justify-between">
+            <div class="space-y-4">
+              <div class="flex gap-2 items-center">
+                <NuxtImg
+                  :src="`/assets/img/ranks/${playerRank.primaryGroup}.png`"
+                  class="h-6"
+                />
+                <p class="font-bold">{{ session?.data?.user?.name }}</p>
+              </div>
+              <div>
+                <div class="flex gap-2 items-center">
+                  <NuxtImg src="/assets/img/icons/coins.png" class="size-8"/>
+                  <p class="font-bold">{{ playerBalance.balance }} coins</p>
+                </div>
+              </div>
+
+              <div v-if="playerProfiles">
+                <template v-for="(playerProfile, index) of playerProfiles" :key="(playerProfile as any).uuid">
+                  <p>Profile #{{ index + 1 }}</p>
+                  <p>class: {{ playerProfile?.class }}</p>
+                  <p>level: {{ playerProfile?.level }}</p>
+                  <p>class_points: {{ playerProfile?.classPoints }}</p>
+                  <p>skill_points: {{ playerProfile?.skillPoints }}</p>
+                  <p>experience: {{ playerProfile?.experience }}</p>
+                  <p>dexterity: {{ JSON.parse(playerProfile?.attributes).dexterity }}</p>
+                  <p>strength: {{ JSON.parse(playerProfile?.attributes).strength }}</p>
+                  <p>intelligence: {{ JSON.parse(playerProfile?.attributes).intelligence }}</p>
+                  <template v-for="(playerJob, jobName) of JSON.parse(playerProfile?.professions)" :key="(playerProfile as any).uuid">
+                    <p>Job {{ jobName }}</p>
+                    <p>exp: {{ playerJob?.exp }}</p>
+                    <p>level: {{ playerJob?.level }}</p>
+                  </template>
+                </template>
+              </div>
+            </div>
+
+            <div class="h-[400px]">
+              <NuxtImg
+                :src="`https://mineskin.eu/armor/body/${mcUuid}/200.png`"
+                class="h-full"
+              />
+            </div>
+
           </div>
-          <div>
-            <p class="font-semibold">Username:</p>
-            <p>{{ session?.data?.user?.name }}</p>
-          </div>
-          <div>
-            <p class="font-semibold">Rank:</p>
-            <p>Member</p>
-          </div>
-          {{ JSON.stringify(session) }}
         </div>
       </div>
 
       <div class="space-y-8">
         <UCard class="p-6">
-          <h2 class="text-2xl font-bold mb-4">Modifie ton image de profil</h2>
-          <UForm :schema="updateImageSchema" :state="imageState" class="space-y-4" @submit="onImageUpdate">
-            <UFormField label="Image Url" name="imageUrl">
-              <UInput v-model="imageState.imageUrl" type="url"/>
-            </UFormField>
-
-            <Button
-              text="Modifier"
-              type="submit"
-              variant="primary"
-            />
-          </UForm>
+          <h2 class="text-2xl font-bold mb-4">Détail de mon compte</h2>
+          <div class="space-y-4">
+            <div>
+              <p class="font-semibold"><span class="font-bold">Adresse mail:</span> {{ session?.data?.user?.email }}</p>
+            </div>
+            <div>
+              <p class="font-semibold flex items-center gap-1">
+                <span class="font-bold">Compte Minecraft connecté:</span>
+                <span v-if="mcUuid" class="text-green-600">✓</span>
+                <span v-if="!mcUuid" class="text-red-600">x</span>
+              </p>
+            </div>
+          </div>
         </UCard>
 
         <UCard class="p-6">
-          <h2 class="text-2xl font-bold mb-4">Modifie ton mot de passe</h2>
+          <h2 class="text-2xl font-bold mb-4">Lier mon compte Minecraft</h2>
+          <div class="flex justify-around items-center gap-8">
+            <UForm :state="{}" class="space-y-4 w-full" @submit="onMcAccountLink">
+              <Button
+                text="Obtenir le code"
+                type="submit"
+                variant="primary"
+              />
+            </UForm>
+          </div>
+          <div v-if="mcCode" class="mt-2">
+            <p>Votre code est: <UKbd>{{ mcCode }}</UKbd></p>
+            <p class="mt-1">Vous pouvez executer la commande suivante sur le serveur pour relier votre compte:</p>
+            <UKbd>/link {{ mcCode }}</UKbd>
+          </div>
+        </UCard>
+
+        <UCard class="p-6">
+          <h2 class="text-2xl font-bold mb-4">Modifier mon image de profil</h2>
+          <div class="flex justify-around items-center gap-8">
+            <UForm :schema="updateImageSchema" :state="imageState" class="space-y-4 w-full" @submit="onImageUpdate">
+              <UFormField label="Url" name="imageUrl">
+                <UInput v-model="imageState.imageUrl" type="url" class="w-full"/>
+              </UFormField>
+
+              <Button
+                text="Modifier"
+                type="submit"
+                variant="primary"
+              />
+            </UForm>
+
+            <USeparator label="OU" orientation="vertical" class="h-48" />
+
+            <UForm :schema="updateImageFileSchema" :state="imageFileState" class="space-y-4 w-full" @submit="onImageFileUpdate">
+              <UFormField label="Fichier" name="image">
+                <UInput v-model="imageFileState.image" type="file" @input="handleFileInput" class="w-full"/>
+              </UFormField>
+
+              <Button
+                text="Modifier"
+                type="submit"
+                variant="primary"
+              />
+            </UForm>
+          </div>
+        </UCard>
+
+        <UCard class="p-6">
+          <h2 class="text-2xl font-bold mb-4">Modifier mon mot de passe</h2>
           <UForm :schema="updatePasswordSchema" :state="newPasswordState" class="space-y-4" @submit="onPasswordUpdate">
             <UFormField label="Mot de passe actuel" name="password">
               <UInput v-model="newPasswordState.password" type="password"/>
@@ -141,7 +287,7 @@ async function onDeleteAccount() {
         </UCard>
 
         <UCard class="p-6">
-          <h2 class="text-2xl font-bold mb-4">Supprime ton compte</h2>
+          <h2 class="text-2xl font-bold mb-4">Supprimer mon compte</h2>
           <p class="mb-4">Cette action est irréversible !</p>
 
           <UModal v-model:open="isDeleteAccountModalOpen">

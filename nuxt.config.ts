@@ -6,6 +6,7 @@ export default defineNuxtConfig({
         '@nuxt/ui',
         '@nuxt/image',
         '@vesp/nuxt-fontawesome',
+        'nuxt-file-storage',
     ],
     css: [
         'public/assets/css/tailwind.css',
@@ -13,5 +14,8 @@ export default defineNuxtConfig({
     ],
     ui: {
         colorMode: false
-    }
+    },
+    fileStorage: {
+        mount: process.env.MOUNT_FILES,
+    },
 })
