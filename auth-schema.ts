@@ -1,16 +1,17 @@
 import { mysqlTable, varchar, text, timestamp, boolean, int } from "drizzle-orm/mysql-core";
 
-export const user = mysqlTable("user", {
+export const user = mysqlTable("web_user", {
 					id: varchar('id', { length: 36 }).primaryKey(),
 					name: text('name').notNull(),
  email: varchar('email', { length: 255 }).notNull().unique(),
  emailVerified: boolean('email_verified').notNull(),
  image: text('image'),
  createdAt: timestamp('created_at').notNull(),
- updatedAt: timestamp('updated_at').notNull()
+ updatedAt: timestamp('updated_at').notNull(),
+  linkCode: text('link_code'),
 				});
 
-export const session = mysqlTable("session", {
+export const session = mysqlTable("web_session", {
 					id: varchar('id', { length: 36 }).primaryKey(),
 					expiresAt: timestamp('expires_at').notNull(),
  token: varchar('token', { length: 255 }).notNull().unique(),
@@ -18,14 +19,14 @@ export const session = mysqlTable("session", {
  updatedAt: timestamp('updated_at').notNull(),
  ipAddress: text('ip_address'),
  userAgent: text('user_agent'),
- userId: text('user_id').notNull().references(()=> user.id, { onDelete: 'cascade' })
+ userId: varchar('userId', { length: 36 }).notNull().references(()=> user.id, { onDelete: 'cascade' })
 				});
 
-export const account = mysqlTable("account", {
+export const account = mysqlTable("web_account", {
 					id: varchar('id', { length: 36 }).primaryKey(),
 					accountId: text('account_id').notNull(),
  providerId: text('provider_id').notNull(),
- userId: text('user_id').notNull().references(()=> user.id, { onDelete: 'cascade' }),
+ userId: varchar('userId', { length: 36 }).notNull().references(()=> user.id, { onDelete: 'cascade' }),
  accessToken: text('access_token'),
  refreshToken: text('refresh_token'),
  idToken: text('id_token'),
@@ -37,7 +38,7 @@ export const account = mysqlTable("account", {
  updatedAt: timestamp('updated_at').notNull()
 				});
 
-export const verification = mysqlTable("verification", {
+export const verification = mysqlTable("web_verification", {
 					id: varchar('id', { length: 36 }).primaryKey(),
 					identifier: text('identifier').notNull(),
  value: text('value').notNull(),
@@ -45,3 +46,9 @@ export const verification = mysqlTable("verification", {
  createdAt: timestamp('created_at'),
  updatedAt: timestamp('updated_at')
 				});
+
+export const mcAccountLink = mysqlTable("web_mc_account_link", {
+  id: varchar('id', { length: 36 }).primaryKey(),
+  userId: varchar('userId', { length: 36 }).notNull().references(()=> user.id, { onDelete: 'cascade' }),
+  mcUuid: text('mc_uuid').notNull(),
+})

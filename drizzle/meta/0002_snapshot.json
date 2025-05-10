@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "db15708d-7df9-460c-a08d-322a0cfb6593",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "a587f153-128c-4e30-8f3e-f1968a9713ea",
+  "prevId": "e8f4531c-cd3c-48d9-9c1c-e65c0c29ccf2",
   "tables": {
     "web_account": {
       "name": "web_account",
@@ -118,6 +118,58 @@
       "compositePrimaryKeys": {
         "web_account_id": {
           "name": "web_account_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "web_mc_account_link": {
+      "name": "web_mc_account_link",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "userId": {
+          "name": "userId",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mc_uuid": {
+          "name": "mc_uuid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "web_mc_account_link_userId_web_user_id_fk": {
+          "name": "web_mc_account_link_userId_web_user_id_fk",
+          "tableFrom": "web_mc_account_link",
+          "tableTo": "web_user",
+          "columnsFrom": [
+            "userId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "web_mc_account_link_id": {
+          "name": "web_mc_account_link_id",
           "columns": [
             "id"
           ]
@@ -270,6 +322,13 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "link_code": {
+          "name": "link_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         }
       },

@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import {drizzleAdapter} from "better-auth/adapters/drizzle";
 import {db} from "@/db";
-import * as schema from "@/db/schema";
+import * as schema from "@/auth-schema";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -12,13 +12,23 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: true,
+    // requireEmailVerification: true,
   },
-  emailVerification: {
-    sendOnSignUp: true,
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url, token }, request) => {
-      // TODO: send mail
+  user: {
+    deleteUser: {
+      enabled: true,
+    },
+    additionalFields: {
+      linkCode: {
+        type: "string"
+      }
     }
   }
+  // emailVerification: {
+  //   sendOnSignUp: true,
+  //   autoSignInAfterVerification: true,
+  //   sendVerificationEmail: async ({ user, url, token }, request) => {
+  //     // TODO: send mail
+  //   }
+  // }
 });

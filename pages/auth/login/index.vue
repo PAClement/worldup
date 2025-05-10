@@ -4,6 +4,9 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import BackgroundImage from "@/components/ui/BackgroundImage.vue";
 import Header from "@/components/layout/Header.vue";
 import Footer from "@/components/layout/Footer.vue";
+import {authClient} from "@/auth-client";
+import {faRightToBracket} from "@fortawesome/free-solid-svg-icons";
+import Button from "@/components/ui/Button.vue";
 
 const schema = v.object({
   email: v.pipe(v.string(), v.email('Invalid email')),
@@ -19,8 +22,20 @@ const state = reactive({
 
 const toast = useToast()
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
-  console.log(event.data)
+  const { email, password } = event.data;
+
+  const { data, error } = await authClient.signIn.email({
+    email,
+    password,
+    callbackURL: '/profile',
+  }, {
+    onError: (ctx) => {
+      toast.add({ title: 'Erreur', description: 'Une erreur incongrue est survenue.', color: 'error' })
+    },
+    onSuccess: (ctx) => {
+      window.location.href = '/profile'
+    }
+  })
 }
 </script>
 
@@ -41,9 +56,14 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
           <UInput v-model="state.password" type="password" />
         </UFormField>
 
-        <UButton type="submit" class="w-fit m-auto">
-          Se Connecter
-        </UButton>
+        <Button
+          type="submit"
+          text="Se connecter"
+          variant="primary"
+          :icon="faRightToBracket"
+          icon-position="right"
+          :margin-auto="true"
+        />
 
         <USeparator class="my-4" />
 

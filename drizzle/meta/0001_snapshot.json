@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "db15708d-7df9-460c-a08d-322a0cfb6593",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "e8f4531c-cd3c-48d9-9c1c-e65c0c29ccf2",
+  "prevId": "db15708d-7df9-460c-a08d-322a0cfb6593",
   "tables": {
     "web_account": {
       "name": "web_account",
@@ -270,6 +270,13 @@
           "type": "timestamp",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "link_code": {
+          "name": "link_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         }
       },
