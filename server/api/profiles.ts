@@ -1,7 +1,7 @@
 import {db} from "~/db";
 import {auth} from "~/auth";
 import {eq} from "drizzle-orm/sql/expressions/conditions";
-import {lpPlayers, mmoCorePlayerData, mmoProfilesPlayerData, xConomy} from "~/external-schema";
+import {mmoCorePlayerData, mmoProfilesPlayerData} from "~/external-schema";
 import {isUuidMatchUserId} from "~/server/utils";
 
 export default defineEventHandler(async (event) => {
@@ -23,15 +23,13 @@ export default defineEventHandler(async (event) => {
     return null
   }
 
-  console.log(Object.keys(JSON.parse(rawProfiles[0].data).Profiles))
-
   const profiles = []
-  for (const profile of Object.keys(JSON.parse(rawProfiles[0].data).Profiles)) {
+  for (const [profile, profileDetails] of Object.entries(JSON.parse(rawProfiles[0].data).Profiles)) {
     const rawProfile = await db.select()
       .from(mmoCorePlayerData)
       .where(eq(mmoCorePlayerData.uuid, profile ?? ''))
 
-    profiles.push(rawProfile[0])
+    profiles.push({ ...rawProfile[0], balance: (profileDetails as any).Balance })
   }
 
   return profiles

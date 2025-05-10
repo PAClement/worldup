@@ -13,7 +13,7 @@ export default defineNuxtConfig({
         'public/assets/css/styles.css',
     ],
     ui: {
-        colorMode: false
+        colorMode: false,
     },
     fileStorage: {
         mount: process.env.MOUNT_FILES,

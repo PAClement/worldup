@@ -8,6 +8,8 @@ import type {FormSubmitEvent} from '@nuxt/ui'
 import Button from "@/components/ui/Button.vue";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 import {generateRandomCode} from "@/lib/utils";
+import Profile from "@/components/layout/Profile.vue";
+import type { TabsItem } from '@nuxt/ui'
 
 const session = authClient.useSession()
 
@@ -43,12 +45,6 @@ const mcCode = ref('')
 const mcUuid = await $fetch('/api/uuid', {
   method: 'GET',
 })
-const playerBalance = await $fetch('/api/balance', {
-  method: 'POST',
-  body: {
-    uuid: mcUuid
-  }
-})
 const playerRank = await $fetch('/api/rank', {
   method: 'POST',
   body: {
@@ -60,6 +56,20 @@ const playerProfiles = await $fetch('/api/profiles', {
   body: {
     uuid: mcUuid
   }
+})
+
+const tabItems = computed(() => {
+  const items: TabsItem[] = []
+
+  playerProfiles?.forEach((_, index) => {
+    items.push({
+      label: `Profile #${index + 1}`,
+      icon: 'i-lucide-user',
+      slot: `profile_${index}` as const,
+    })
+  })
+
+  return items
 })
 
 const { handleFileInput, files } = useFileStorage({ clearOldFiles: true })
@@ -134,6 +144,10 @@ async function onMcAccountLink() {
     }
   })
 }
+
+const getSlotName = (index: number) => {
+  return `profile_${index}`
+}
 </script>
 
 <template>
@@ -153,72 +167,57 @@ async function onMcAccountLink() {
         />
 
         <div v-if="mcUuid">
-
-          <div class="flex justify-between">
-            <div class="space-y-4">
-              <div class="flex gap-2 items-center">
-                <NuxtImg
-                  :src="`/assets/img/ranks/${playerRank.primaryGroup}.png`"
-                  class="h-6"
-                />
-                <p class="font-bold">{{ session?.data?.user?.name }}</p>
-              </div>
-              <div>
-                <div class="flex gap-2 items-center">
-                  <NuxtImg src="/assets/img/icons/coins.png" class="size-8"/>
-                  <p class="font-bold">{{ playerBalance.balance }} coins</p>
-                </div>
-              </div>
-
-              <div v-if="playerProfiles">
-                <template v-for="(playerProfile, index) of playerProfiles" :key="(playerProfile as any).uuid">
-                  <p>Profile #{{ index + 1 }}</p>
-                  <p>class: {{ playerProfile?.class }}</p>
-                  <p>level: {{ playerProfile?.level }}</p>
-                  <p>class_points: {{ playerProfile?.classPoints }}</p>
-                  <p>skill_points: {{ playerProfile?.skillPoints }}</p>
-                  <p>experience: {{ playerProfile?.experience }}</p>
-                  <p>dexterity: {{ JSON.parse(playerProfile?.attributes).dexterity }}</p>
-                  <p>strength: {{ JSON.parse(playerProfile?.attributes).strength }}</p>
-                  <p>intelligence: {{ JSON.parse(playerProfile?.attributes).intelligence }}</p>
-                  <template v-for="(playerJob, jobName) of JSON.parse(playerProfile?.professions)" :key="(playerProfile as any).uuid">
-                    <p>Job {{ jobName }}</p>
-                    <p>exp: {{ playerJob?.exp }}</p>
-                    <p>level: {{ playerJob?.level }}</p>
+          <div>
+            <div class="space-y-4 flex-1">
+              <div v-if="playerProfiles && tabItems">
+                <UTabs :items="tabItems" variant="link" class="gap-4 w-full" :ui="{ trigger: 'grow' }">
+                  <template #[getSlotName(index)] v-for="(playerProfile, index) of playerProfiles" :key="(playerProfile as any).uuid">
+                    <Profile :playerProfile="playerProfile" :index="index" />
                   </template>
-                </template>
+                </UTabs>
               </div>
             </div>
-
-            <div class="h-[400px]">
-              <NuxtImg
-                :src="`https://mineskin.eu/armor/body/${mcUuid}/200.png`"
-                class="h-full"
-              />
-            </div>
-
           </div>
         </div>
       </div>
 
       <div class="space-y-8">
-        <UCard class="p-6">
-          <h2 class="text-2xl font-bold mb-4">Détail de mon compte</h2>
-          <div class="space-y-4">
-            <div>
-              <p class="font-semibold"><span class="font-bold">Adresse mail:</span> {{ session?.data?.user?.email }}</p>
+        <UCard v-if="mcUuid" class="p-6">
+          <div class="flex justify-between w-full">
+            <div class="space-y-4 flex-1">
+              <h2 class="text-2xl font-bold mb-4">Détail de mon compte</h2>
+
+              <div>
+                <p class="font-semibold"><span class="font-bold">Adresse mail:</span> {{ session?.data?.user?.email }}</p>
+              </div>
+              <div>
+                <p class="font-semibold flex items-center gap-1">
+                  <span class="font-bold">Compte Minecraft connecté:</span>
+                  <span v-if="mcUuid" class="text-green-600">✓</span>
+                  <span v-if="!mcUuid" class="text-red-600">x</span>
+                </p>
+              </div>
             </div>
-            <div>
-              <p class="font-semibold flex items-center gap-1">
-                <span class="font-bold">Compte Minecraft connecté:</span>
-                <span v-if="mcUuid" class="text-green-600">✓</span>
-                <span v-if="!mcUuid" class="text-red-600">x</span>
-              </p>
+
+            <div class="flex flex-col justify-between gap-4">
+              <div class="flex gap-2 items-center bg-black/90 py-0.5 px-1 border-rounded-xs">
+                <NuxtImg
+                  :src="`/assets/img/ranks/${playerRank.primaryGroup}.png`"
+                  class="h-6"
+                />
+                <p class="font-bold text-white">{{ session?.data?.user?.name }}</p>
+              </div>
+              <div class="h-[300px] w-[150px]">
+                <NuxtImg
+                  :src="`https://mineskin.eu/armor/body/${mcUuid}/150.png`"
+                  class="h-full"
+                />
+              </div>
             </div>
           </div>
         </UCard>
 
-        <UCard class="p-6">
+        <UCard v-else-if="!mcUuid" class="p-6">
           <h2 class="text-2xl font-bold mb-4">Lier mon compte Minecraft</h2>
           <div class="flex justify-around items-center gap-8">
             <UForm :state="{}" class="space-y-4 w-full" @submit="onMcAccountLink">
