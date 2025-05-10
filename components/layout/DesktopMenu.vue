@@ -46,10 +46,9 @@ const items = computed<DropdownMenuItem[][]>(() => [
           alt="Logo"
           class="h-12 w-auto"/>
       </NuxtLink>
-      <NuxtLink to="/" :class="classes.default" :exact-active-class="classes.active">Qui sommes-nous ?</NuxtLink>
       <NuxtLink to="/news" :class="classes.default" :exact-active-class="classes.active">News</NuxtLink>
       <NuxtLink to="/forum" :class="classes.default" :exact-active-class="classes.active">Forum</NuxtLink>
-      <NuxtLink to="/" :class="classes.default" :exact-active-class="classes.active">Map</NuxtLink>
+      <NuxtLink to="/map" :class="classes.default" :exact-active-class="classes.active">Map</NuxtLink>
     </div>
     <div class="hidden lg:flex lg:flex-1 lg:justify-end">
       <NuxtLink v-if="!session?.data" to="/auth/login" :class="classes.default" :exact-active-class="classes.active">
